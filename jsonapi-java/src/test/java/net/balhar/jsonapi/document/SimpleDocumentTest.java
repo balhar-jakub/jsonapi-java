@@ -130,6 +130,23 @@ public class SimpleDocumentTest {
             assertThat(((Collection) resourceLinks.get("person")).contains(new Link("self", "http://test.balhar.net/api/person/1")), is(true));
         }
     }
+
+    public class WithBaseUrl {
+        @Before
+        public void setUp(){
+            document = new SimpleDocument(new Platypus(),"http://test.balhar.net/api/");
+
+            document.link("next", "previous");
+
+            result = (Map) document.transform();
+        }
+
+        @Test
+        public void linkContainsBaseUrl() {
+            assertThat(((Collection)result.get(JsonApiData.links.name())).contains(new Link("next", "http://test" +
+                    ".balhar.net/api/previous")), is(true));
+        }
+    }
 }
 
 enum JsonApiData {

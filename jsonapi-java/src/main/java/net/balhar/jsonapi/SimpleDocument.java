@@ -10,12 +10,18 @@ import java.util.Map;
  * There is concept of link on top level of the document.
  */
 public class SimpleDocument implements Document {
+    private String baseUrl = "";
     // Data contain always just one resource. Data more or less means resource
     private Resource data;
     // Included is optional, it may not be present in the output.
     private Collection<Object> included = new ArrayList<>();
     private Collection<Link> links = new ArrayList<>();
     private Map<String, Object> meta = new HashMap<>();
+
+    public SimpleDocument(Object object, String baseUrl){
+        this(object);
+        this.baseUrl = baseUrl;
+    }
 
     /**
      * It creates base for data based on this object. The question is how to add links to the data object instead of
@@ -33,14 +39,14 @@ public class SimpleDocument implements Document {
 
     @Override
     public Document link(String key, String location) {
-        links.add(new Link(key, location));
+        links.add(new Link(key, baseUrl + location));
 
         return this;
     }
 
     @Override
     public Document resourceLink(String type, String action, String location) {
-        data.link(type, action, location);
+        data.link(type, action, baseUrl + location);
 
         return this;
     }
