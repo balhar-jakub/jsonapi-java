@@ -1,15 +1,12 @@
-package net.balhar.jsonapi.document;
+package net.balhar.jsonapi.simple;
 
 import net.avh4.test.junit.Nested;
-import net.balhar.jsonapi.Document;
-import net.balhar.jsonapi.Link;
-import net.balhar.jsonapi.SimpleDocument;
+import net.balhar.jsonapi.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,33 +20,38 @@ import static org.junit.Assert.*;
 @RunWith(Nested.class)
 public class SimpleDocumentTest {
     private Document document;
-    private Map result;
+    private TransformedDocument result;
 
     public class EmptyDocument {
         @Before
         public void setUp(){
-            document = new SimpleDocument();
-            result = (Map) document.transform();
+            document = new SimpleDocument(new Identifiable() {
+                @Override
+                public String getUuid() {
+                    return "uuid";
+                }
+            });
+            result = (TransformedDocument) document.transform();
         }
 
         @Test
         public void containEmptyLinks(){
-            assertThat(((Collection) result.get(JsonApiData.links.name())).size(), is(0));
+            assertThat(result.links().size(), is(0));
         }
 
         @Test
         public void containEmptyData(){
-            assertNotNull(result.get(JsonApiData.data.name()));
+            assertNotNull(result.data());
         }
 
         @Test
         public void doesntContainMeta(){
-            assertNull(result.get(JsonApiData.meta.name()));
+            assertNull(result.meta());
         }
 
         @Test
         public void doesntContainIncluded(){
-            assertNull(result.get(JsonApiData.included.name()));
+            assertNull(result.included());
         }
     }
 
@@ -57,7 +59,7 @@ public class SimpleDocumentTest {
         private Collection links;
         private Collection included;
         private Map meta;
-        private Map data;
+        private TransformedResource singlePlatypus;
 
         @Before
         public void setUp() throws MalformedURLException {
@@ -72,14 +74,14 @@ public class SimpleDocumentTest {
 
                     .include(new Platypus())
 
-                    .resourceLink("person", "self", "http://test.balhar.net/api/person/1");
+                    .link("uuid","person", "self", "http://test.balhar.net/api/person/1");
 
-            result = (Map) document.transform();
+            result = (TransformedDocument) document.transform();
 
-            links = (Collection)result.get(JsonApiData.links.name());
-            included = (Collection) result.get(JsonApiData.included.name());
-            meta = (Map) result.get(JsonApiData.meta.name());
-            data = (Map) result.get(JsonApiData.data.name());
+            links = result.links();
+            included = result.included();
+            meta = result.meta();
+            singlePlatypus = (TransformedResource) (result.data()).iterator().next();
         }
 
         @Test
@@ -118,15 +120,15 @@ public class SimpleDocumentTest {
 
         @Test
         public void containsCorrectData(){
-            assertThat((String)data.get("name"), is("simpleName"));
-            assertThat((String)data.get("type"), is("Platypus"));
-            assertThat((int)data.get("id"), is(1));
-            assertThat(((String[])data.get("subspecies")).length, is(2));
+            assertThat((String) singlePlatypus.get("name"), is("simpleName"));
+            assertThat((String) singlePlatypus.get("type"), is("Platypus"));
+            assertThat((int) singlePlatypus.get("id"), is(1));
+            assertThat(((String[]) singlePlatypus.get("subspecies")).length, is(2));
         }
 
         @Test
         public void dataContainsCorrectLinks() throws Exception{
-            Map resourceLinks = ((Map) data.get(JsonApiData.links.name()));
+            Map resourceLinks = singlePlatypus.links();
             assertThat(((Collection) resourceLinks.get("person")).contains(new Link("self", "http://test.balhar.net/api/person/1")), is(true));
         }
     }
@@ -138,24 +140,25 @@ public class SimpleDocumentTest {
 
             document.link("next", "previous");
 
-            result = (Map) document.transform();
+            result = (TransformedDocument) document.transform();
         }
 
         @Test
         public void linkContainsBaseUrl() {
-            assertThat(((Collection)result.get(JsonApiData.links.name())).contains(new Link("next", "http://test" +
+            assertThat(result.links().contains(new Link("next", "http://test" +
                     ".balhar.net/api/previous")), is(true));
         }
     }
 }
 
-enum JsonApiData {
-    meta,links,included,data
-}
-
 @SuppressWarnings("MismatchedReadAndWriteOfArray")
-class Platypus {
+class Platypus implements Identifiable {
     private String name = "simpleName";
     private int id = 1;
     private String[] subspecies = new String[]{"spec1", "spec2"};
+
+    @Override
+    public String getUuid() {
+        return "uuid";
+    }
 }

@@ -1,5 +1,7 @@
 package net.balhar.jsonapi;
 
+import java.util.Collection;
+
 /**
  * Basic abstraction used throughout this module. This abstraction allows you to create Documents containing links,
  * included and meta on the top level. It must also be capable of adding the links to the resource being modeled as
@@ -21,16 +23,6 @@ public interface Document {
     Document link(String key, String location);
 
     /**
-     * It adds link to the resource itself instead of into the document. Every resource can contain any amount of
-     * links.
-     *
-     * @param type type represents location in the links and a way how to find out more info
-     * @param key key represents one of the resources represented by the link.
-     * @param location Url of the resource which represents some followup on related resource.
-     */
-    Document resourceLink(String type, String key, String location);
-
-    /**
      * It includes the whole object into the final document. How exactly it will be done depends on the implementation.
      *
      * @param included Object to be included.
@@ -45,6 +37,25 @@ public interface Document {
      * @param value value of the meta information
      */
     Document meta(String key, Object value);
+
+    /**
+     * Adds link to the resource with given uuid already present in the document. If there is no such resource in the
+     * document then throw Exception.
+     *
+     * @param uuid uuid of resource to which the link belongs
+     */
+    Document link(String uuid, String type, String key, String location);
+
+    Document link(String uuid, String type, String location);
+
+    /**
+     * Adds linkage section to resource identified by the link uuid. If the section already exists add payload to
+     * this collection.
+     *
+     * @param linkUuid uuid of the resource to which this link belongs. It must be present.
+     * @param payload Payload representing the linkage.
+     */
+    Document linkage(String linkUuid, Object payload);
 
     /**
      * This method returns representation of the object as a simple Dto or HashMap, which any serializer can simply

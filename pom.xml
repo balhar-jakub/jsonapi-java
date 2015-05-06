@@ -6,7 +6,7 @@
 
     <groupId>net.balhar.jsonapi</groupId>
     <artifactId>jsonapi</artifactId>
-    <version>0.1</version>
+    <version>0.7</version>
 
     <name>Json API java implementation</name>
     <description>It brings capabilities needed to simply use JSON Api (http://jsonapi.org/)</description>
@@ -33,13 +33,6 @@
         </developer>
     </developers>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -52,19 +45,25 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.3</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>com.cloudentr.repository.releases</id>
+            <name>CloudEntr Releases repository</name>
+		<url>https://nexus.cloudentr.com/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>com.cloudentr.repository.snapshots</id>
+            <name>CloudEntr snapshot repository</name>
+            <url>https://nexus.cloudentr.com/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <jackson-2-version>2.5.3</jackson-2-version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -79,5 +78,20 @@
             <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Testing integration with Jackson dependencies. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson-2-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-2-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- End of testing integration with Jackson -->
     </dependencies>
 </project>

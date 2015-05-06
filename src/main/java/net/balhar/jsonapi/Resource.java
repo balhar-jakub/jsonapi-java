@@ -15,6 +15,18 @@ public interface Resource {
      */
     Resource link(String type, String action, String location);
 
+    Resource link(String type, String location);
+
+    /**
+     * It adds linkage to the document. Based on this it should probably also be able to fill included. There must be
+     * some interface, which provide way how to retrieve the relevant information. Probably try expecting the object,
+     * which will contain all information. I would say by default add it to the JSON Document, but it isn't a way.
+     *
+     * @param payload Payload for the linkage
+     * @return Itself for chaining
+     */
+    Resource linkage(String type, Object payload);
+
     /**
      * Returns object, which is ready for serialization.
      *
