@@ -1,6 +1,9 @@
 package net.balhar.jsonapi.simple;
 
-import net.balhar.jsonapi.*;
+import net.balhar.jsonapi.ApiKeys;
+import net.balhar.jsonapi.Document;
+import net.balhar.jsonapi.Identifiable;
+import net.balhar.jsonapi.Resource;
 
 import java.util.ArrayList;
 import java.util.Collection;
