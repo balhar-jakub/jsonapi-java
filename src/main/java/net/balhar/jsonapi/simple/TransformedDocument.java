@@ -18,8 +18,8 @@ public class TransformedDocument<K, V> extends HashMap<K, V> {
         return (Collection) get(ApiKeys.DATA);
     }
 
-    public Collection links(){
-        return (Collection) get(ApiKeys.LINKS);
+    public Map links(){
+        return (Map) get(ApiKeys.LINKS);
     }
 
     public Collection included() {

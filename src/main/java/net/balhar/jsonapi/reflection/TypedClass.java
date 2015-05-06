@@ -54,6 +54,7 @@ public class TypedClass {
             } else {
                 typeValue = linkage.getClass().getSimpleName();
             }
+            type.setAccessible(true);
             type.set(typedLink, typeValue);
         } catch (NotFoundException| CannotCompileException| InstantiationException| IllegalAccessException|
                 NoSuchFieldException| ClassNotFoundException e) {

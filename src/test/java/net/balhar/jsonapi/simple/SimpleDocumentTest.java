@@ -56,7 +56,7 @@ public class SimpleDocumentTest {
     }
 
     public class ComplexDocument {
-        private Collection links;
+        private Map links;
         private Collection included;
         private Map meta;
         private TransformedResource singlePlatypus;
@@ -91,9 +91,9 @@ public class SimpleDocumentTest {
 
         @Test
         public void containsCorrectLinks() throws Exception {
-            assertThat(links.contains(new Link("next", "http://test.balhar.net/api/previous")), is(true));
-            assertThat(links.contains(new Link("previous", "http://another.balhar.net/api/next")), is(true));
-            assertThat(links.contains(new Link("self", "http://test.balhar.net/api")), is(true));
+            assertThat((String)links.get("next"), is("http://test.balhar.net/api/previous"));
+            assertThat((String)links.get("previous"), is("http://another.balhar.net/api/next"));
+            assertThat((String)links.get("self"), is("http://test.balhar.net/api"));
         }
 
         @Test
@@ -145,8 +145,7 @@ public class SimpleDocumentTest {
 
         @Test
         public void linkContainsBaseUrl() {
-            assertThat(result.links().contains(new Link("next", "http://test" +
-                    ".balhar.net/api/previous")), is(true));
+            assertThat((String) result.links().get("next"), is("http://test.balhar.net/api/previous"));
         }
     }
 }

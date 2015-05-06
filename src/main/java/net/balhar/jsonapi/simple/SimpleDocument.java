@@ -18,7 +18,7 @@ public class SimpleDocument implements Document {
 
     private Map<String, Resource> data = new HashMap<>();
     private Collection<Object> included = new ArrayList<>();
-    private Collection<Link> links = new ArrayList<>();
+    private Map<String, String> links = new HashMap<>();
     private Map<String, Object> meta = new HashMap<>();
 
     public SimpleDocument(Collection<? extends Identifiable> object, String baseUrl){
@@ -44,7 +44,7 @@ public class SimpleDocument implements Document {
 
     @Override
     public Document link(String key, String location) {
-        links.add(new Link(key, baseUrl + location));
+        links.put(key, baseUrl + location);
 
         return this;
     }
