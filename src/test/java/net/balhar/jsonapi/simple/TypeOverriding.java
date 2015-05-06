@@ -1,12 +1,16 @@
 package net.balhar.jsonapi.simple;
 
 import net.avh4.test.junit.Nested;
+import net.balhar.jsonapi.ApiKeys;
 import net.balhar.jsonapi.Document;
 import net.balhar.jsonapi.Identifiable;
 import net.balhar.jsonapi.Type;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test for overriding type of the document.
@@ -22,7 +26,10 @@ public class TypeOverriding {
 
     @Test
     public void payloadHasCorrectType() {
-        dwarfWarrior.transform();
+        TransformedDocument document = (TransformedDocument) dwarfWarrior.transform();
+        TransformedResource warrior = (TransformedResource) document.data().iterator().next();
+        String warriorType = (String) warrior.get(ApiKeys.TYPE);
+        assertThat(warriorType, is("dwarf"));
     }
 }
 

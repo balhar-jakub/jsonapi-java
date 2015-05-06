@@ -100,8 +100,13 @@ public class SimpleResource implements Resource {
         fullLinks.putAll(topLevelLinks);
 
         // Take into account the annotation if present.
-        representation.put("type", backingObject.getClass().getSimpleName());
-        representation.put("links", fullLinks);
+        Type typeAnnotation = backingObject.getClass().getAnnotation(Type.class);
+        if(typeAnnotation == null) {
+            representation.put(ApiKeys.TYPE, backingObject.getClass().getSimpleName());
+        } else {
+            representation.put(ApiKeys.TYPE, typeAnnotation.name());
+        }
+        representation.put(ApiKeys.LINKS, fullLinks);
 
         return representation;
     }
