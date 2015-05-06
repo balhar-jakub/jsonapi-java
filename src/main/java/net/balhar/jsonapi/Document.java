@@ -37,13 +37,26 @@ public interface Document {
     Document meta(String key, Object value);
 
     /**
-     * Adds link to the resource with given uuid already present in the document. If there is no such resource in the
-     * document then throw Exception.
+     * Adds nested link to the resource with given uuid already present in the document. If there is no such resource in
+     * the document then throw RuntimeException. It creates nested link in the resource identified by uuid. Nested
+     * links are created under associationKey and further accessible as nestedKey.
      *
      * @param uuid uuid of resource to which the link belongs
+     * @param associationKey Key under which nested link for this key will be present.
+     * @param nestedKey Key under which this location is stored in associationKey store.
+     * @param location Url associated with this link.
      */
     Document link(String uuid, String associationKey, String nestedKey, String location);
 
+    /**
+     * This method is used for creating top level links on the resource identified by the uuid. The link will be
+     * under key associationKey with value location. If the resource with given uuid isn't present in the Document
+     * throw RuntimeException.
+     *
+     * @param uuid Uuid of the resource already present in the document.
+     * @param associationKey Key under which this location will be present in the links section of resources.
+     * @param location Url associated with this link.
+     */
     Document link(String uuid, String associationKey, String location);
 
     /**

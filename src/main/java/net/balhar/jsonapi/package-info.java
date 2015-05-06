@@ -1,11 +1,18 @@
 /**
- * It is just simple library for wrapping any Object into the JSON API envelope.
+ * This package contains core interfaces and annotations for creating library supporting JSON Api in unobtrusive form
+ * . You create document passing object to be serialized into JSON API. This object is envelope providing fluent api
+ * to add further json api specific implementation. By calling transform on the document you receive fully featured
+ * JSON Api document with all relevnat data in valid structure.
  *
- * Is it possible to mark using interface that some object can be included. It means that the object contains the uuid.
+ * Only thing which object to be wrapped must fulfill is to implement interface Identifiable and therefore provide
+ * method to retrieve its identity.
  *
- * Generate included ideally based on the resource with possibility to also add more of them. Probably by adding
- * included as annotation.
- * Generate linkage based on this information. Type can be inferred, Id will also have annotation. By default try id,
- * uuid in this order if nothing is specified.
+ * Furthermore you can provide some annotations on the wrapped object, which the wrapper uses to modify generated
+ * document.
+ *
+ * Ignored - Ignores given property in the output.
+ * Included - Includes either Object or Collection as included and also to the linkage part of the links with correct
+ *  type.
+ * Type - Override default inferred type with specified type.
  */
 package net.balhar.jsonapi;
