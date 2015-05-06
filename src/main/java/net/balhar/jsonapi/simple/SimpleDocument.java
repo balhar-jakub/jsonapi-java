@@ -48,7 +48,14 @@ public class SimpleDocument implements Document {
 
     @Override
     public Document include(Object includable) {
-        included.add(includable);
+        if(includable instanceof Collection) {
+            Collection toBeIncluded = (Collection) includable;
+            for(Object include: toBeIncluded) {
+                included.add(include);
+            }
+        } else {
+            included.add(includable);
+        }
 
         return this;
     }
@@ -61,31 +68,31 @@ public class SimpleDocument implements Document {
     }
 
     @Override
-    public Document link(String uuid, String type, String key, String location) {
+    public Document link(String uuid, String associationKey, String nestedKey, String location) {
         Resource resource = data.get(uuid);
         assertResourceExists(resource);
 
-        resource.link(type, key, location);
+        resource.link(associationKey, nestedKey, location);
 
         return this;
     }
 
     @Override
-    public Document link(String uuid, String type, String location) {
+    public Document link(String uuid, String associationKey, String location) {
         Resource resource = data.get(uuid);
         assertResourceExists(resource);
 
-        resource.link(type, location);
+        resource.link(associationKey, location);
 
         return this;
     }
 
     @Override
-    public Document linkage(String linkUuid, Object payload) {
-        Resource resource = data.get(linkUuid);
+    public Document linkage(String uuid, String associationKey, Object payload) {
+        Resource resource = data.get(uuid);
         assertResourceExists(resource);
 
-        resource.linkage("", payload);
+        resource.linkage(associationKey, payload);
 
         return this;
     }

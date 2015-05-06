@@ -8,14 +8,21 @@ public interface Resource {
     /**
      * It creates new link which is tied to the data provided by the resource.
      *
-     * @param type Type of the resource, which is also name in the collection of the links.
-     * @param action action on given type of resource
+     * @param associationKey Type of the resource, which is also name in the collection of the links.
+     * @param nestedKey action on given type of resource
      * @param location URL path to the given reesource.
      * @return Itself for chaining.
      */
-    Resource link(String type, String action, String location);
+    Resource link(String associationKey, String nestedKey, String location);
 
-    Resource link(String type, String location);
+    /**
+     * It creates new link, which is on top level in links. Links represent only links to given resources.
+     *
+     * @param associationKey Key under which the data will be stored.
+     * @param location URL path to the resource.
+     * @return
+     */
+    Resource link(String associationKey, String location);
 
     /**
      * It adds linkage to the document. Based on this it should probably also be able to fill included. There must be

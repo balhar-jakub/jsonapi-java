@@ -40,14 +40,16 @@ public class IncludedProperty {
     }
 
     @Test
-    public void includedIsInLinkageInLinks(){
+    public void includedIsInLinkageInLinks() throws Exception {
         TransformedResource transferredWarrior = (TransformedResource) warriorTransfer.data().iterator().next();
         Map linksToEnemies = transferredWarrior.links("Elf");
         Collection linkage = (Collection) linksToEnemies.get(ApiKeys.LINKAGE);
         assertThat(linkage.size(), is(2));
 
-        Map enemy = (Map) linkage.iterator().next();
-        assertThat(((String)enemy.get(ApiKeys.TYPE)), is("Elf"));
+        Elf enemy = (Elf) linkage.iterator().next();
+        String type = (String) enemy.getClass().getDeclaredField(ApiKeys.TYPE).get(enemy);
+        assertThat(type, is("Elf"));
+        assertThat(enemy.getUuid(), is("uuid1"));
     }
 
     @Test
@@ -59,7 +61,7 @@ public class IncludedProperty {
 class Dwarf implements Identifiable {
     private String uuid;
     private String name;
-    @Included
+    @Included(type = "Elf")
     private Collection<Elf> enemies;
 
     public Dwarf(String uuid, String name, Collection<Elf> enemies) {
@@ -71,15 +73,5 @@ class Dwarf implements Identifiable {
     @Override
     public String getUuid() {
         return uuid;
-    }
-}
-
-class Elf {
-    private String uuid;
-    private String name;
-
-    Elf(String uuid, String name){
-        this.uuid = uuid;
-        this.name = name;
     }
 }

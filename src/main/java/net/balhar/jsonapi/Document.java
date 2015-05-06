@@ -1,7 +1,5 @@
 package net.balhar.jsonapi;
 
-import java.util.Collection;
-
 /**
  * Basic abstraction used throughout this module. This abstraction allows you to create Documents containing links,
  * included and meta on the top level. It must also be capable of adding the links to the resource being modeled as
@@ -44,18 +42,19 @@ public interface Document {
      *
      * @param uuid uuid of resource to which the link belongs
      */
-    Document link(String uuid, String type, String key, String location);
+    Document link(String uuid, String associationKey, String nestedKey, String location);
 
-    Document link(String uuid, String type, String location);
+    Document link(String uuid, String associationKey, String location);
 
     /**
      * Adds linkage section to resource identified by the link uuid. If the section already exists add payload to
      * this collection.
      *
+     * @param associationKey Association key under which add this to the linkage.
      * @param linkUuid uuid of the resource to which this link belongs. It must be present.
      * @param payload Payload representing the linkage.
      */
-    Document linkage(String linkUuid, Object payload);
+    Document linkage(String linkUuid, String associationKey, Object payload);
 
     /**
      * This method returns representation of the object as a simple Dto or HashMap, which any serializer can simply

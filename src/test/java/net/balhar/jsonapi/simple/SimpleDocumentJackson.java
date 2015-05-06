@@ -7,6 +7,7 @@ import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.Document;
 import net.balhar.jsonapi.Identifiable;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertThat;
  * Tests validating that integration with Jackson works correctly.
  */
 @RunWith(Nested.class)
+@Ignore
 public class SimpleDocumentJackson {
     private Document hauntedHouse;
     private ObjectMapper hauntedHouseDelivery;

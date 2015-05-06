@@ -13,7 +13,7 @@ public class TransformedResource<K, V> extends HashMap<K, V> {
         return (Map) get(ApiKeys.LINKS);
     }
 
-    public Map links(String specificLink) {
-        return (Map) links().get(specificLink);
+    public Map links(String associationKey) {
+        return (Map) links().get(associationKey);
     }
 }

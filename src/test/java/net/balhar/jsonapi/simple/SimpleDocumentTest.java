@@ -129,7 +129,7 @@ public class SimpleDocumentTest {
         @Test
         public void dataContainsCorrectLinks() throws Exception{
             Map resourceLinks = singlePlatypus.links();
-            assertThat(((Collection) resourceLinks.get("person")).contains(new Link("self", "http://test.balhar.net/api/person/1")), is(true));
+            assertThat(((String)((Map) resourceLinks.get("person")).get("self")), is("http://test.balhar.net/api/person/1"));
         }
     }
 

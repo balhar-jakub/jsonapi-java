@@ -1,6 +1,5 @@
-package net.balhar.jsonapi;
+package net.balhar.jsonapi.simple;
 
-import java.net.URL;
 import java.util.Objects;
 
 /**
