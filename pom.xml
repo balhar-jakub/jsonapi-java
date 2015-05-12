@@ -6,7 +6,7 @@
 
     <groupId>net.balhar.jsonapi</groupId>
     <artifactId>jsonapi</artifactId>
-    <version>0.10</version>
+    <version>0.11</version>
 
     <name>Json API java implementation</name>
     <description>It brings capabilities needed to simply use JSON Api (http://jsonapi.org/)</description>
@@ -71,6 +71,13 @@
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>3.19.0-GA</version>
+        </dependency>
+
+        <!-- Spring integration -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.0.3.RELEASE</version>
         </dependency>
 
         <dependency>

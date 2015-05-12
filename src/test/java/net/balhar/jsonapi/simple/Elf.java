@@ -4,6 +4,7 @@ package net.balhar.jsonapi.simple;
  * Created by jbalhar on 5/6/2015.
  */
 public class Elf {
+    public static final long COUNTER = 1;
     private String uuid;
     private String name;
 

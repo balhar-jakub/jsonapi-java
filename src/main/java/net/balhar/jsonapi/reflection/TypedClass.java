@@ -69,7 +69,10 @@ public class TypedClass {
         Field[] fields = linkage.getClass().getDeclaredFields();
         for(Field field: fields) {
             field.setAccessible(true);
-            field.set(typedLink, field.get(linkage));
+            // If it is static it won't work.
+            if(!Modifier.isFinal(field.getModifiers())) {
+                field.set(typedLink, field.get(linkage));
+            }
         }
     }
 

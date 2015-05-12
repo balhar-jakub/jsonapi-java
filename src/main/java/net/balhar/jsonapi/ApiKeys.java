@@ -10,4 +10,5 @@ public class ApiKeys {
     public static String DATA = "data";
     public static String LINKAGE = "linkage";
     public static String TYPE = "type";
+    public static String SELF = "self";
 }
