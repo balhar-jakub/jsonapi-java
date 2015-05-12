@@ -48,19 +48,6 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>com.cloudentr.repository.releases</id>
-            <name>CloudEntr Releases repository</name>
-		<url>https://nexus.cloudentr.com/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>com.cloudentr.repository.snapshots</id>
-            <name>CloudEntr snapshot repository</name>
-            <url>https://nexus.cloudentr.com/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <properties>
         <jackson-2-version>2.5.3</jackson-2-version>
     </properties>
