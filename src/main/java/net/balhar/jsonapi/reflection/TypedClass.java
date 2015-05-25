@@ -24,6 +24,8 @@ public class TypedClass {
 
             // Create the class, but first check whether it doesn't exist, if it exists use it.
             CtClass exists = pool.getOrNull(linkage.getClass().getCanonicalName() + "TypedJSONApi");
+            ClassClassPath ccpath = new ClassClassPath(linkage.getClass());
+            pool.insertClassPath(ccpath);
             if(exists == null) {
                 CtClass subClass = pool.makeClass(linkage.getClass().getCanonicalName() + "TypedJSONApi");
                 final CtClass superClass = pool.get(linkage.getClass().getName());
