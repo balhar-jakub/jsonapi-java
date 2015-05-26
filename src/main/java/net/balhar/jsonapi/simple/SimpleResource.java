@@ -83,10 +83,14 @@ public class SimpleResource implements Resource {
                     if(attribute.get(backingObject) instanceof Collection) {
                         Collection toLink = (Collection) attribute.get(backingObject);
                         for(Object link: toLink) {
-                            linkage(included.type(), new TypedClass(link).transform());
+                            if(link != null) {
+                                linkage(included.type(), new TypedClass(link).transform());
+                            }
                         }
                     } else {
-                        linkage(included.type(), new TypedClass(attribute.get(backingObject)).transform());
+                        if(attribute.get(backingObject) != null) {
+                            linkage(included.type(), new TypedClass(attribute.get(backingObject)).transform());
+                        }
                     }
                     document.include(attribute.get(backingObject));
                 }
