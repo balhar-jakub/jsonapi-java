@@ -22,14 +22,14 @@ public class SimpleResource implements Resource {
     private Object backingObject;
     private Document document;
 
-    public SimpleResource(Object object, Document document){
+    public SimpleResource(Object object, Document document) {
         this.backingObject = object;
         this.document = document;
     }
 
     @Override
     public SimpleResource link(String associationKey, String nestedKey, String location) {
-        if(!links.containsKey(associationKey)){
+        if (!links.containsKey(associationKey)) {
             links.put(associationKey, new HashMap<String, Object>());
         }
         links.get(associationKey).put(nestedKey, location);
@@ -49,12 +49,12 @@ public class SimpleResource implements Resource {
         // It must be more complex as you need to include in runtime type. Can I on the fly create subclass with
         // added field?
 
-        if(!links.containsKey(associationKey)){
+        if (!links.containsKey(associationKey)) {
             links.put(associationKey, new HashMap<String, Object>());
         }
         Map<String, Object> actualLinks = links.get(associationKey);
 
-        if(!actualLinks.containsKey(ApiKeys.LINKAGE)){
+        if (!actualLinks.containsKey(ApiKeys.LINKAGE)) {
             actualLinks.put(ApiKeys.LINKAGE, new ArrayList<>());
         }
         Collection linkage = (Collection) actualLinks.get(ApiKeys.LINKAGE);
@@ -65,53 +65,63 @@ public class SimpleResource implements Resource {
 
     public Object transform() {
         Field[] fields = backingObject.getClass().getDeclaredFields();
-        TransformedResource<String, Object> representation =  new TransformedResource<>();
-        // Add topLevelLinks to actual links.
+        TransformedResource<String, Object> representation = new TransformedResource<>();
 
         try {
             for (Field attribute : fields) {
                 Annotation ignoreThisField = attribute.getAnnotation(Ignored.class);
-                if(ignoreThisField != null) {
+                if (ignoreThisField != null) {
                     continue;
                 }
 
                 Included included = attribute.getAnnotation(Included.class);
                 attribute.setAccessible(true);
-                if(included == null) {
+                if (included == null) {
                     representation.put(attribute.getName(), attribute.get(backingObject));
-                } else {
-                    if(attribute.get(backingObject) instanceof Collection) {
-                        Collection toLink = (Collection) attribute.get(backingObject);
-                        for(Object link: toLink) {
-                            if(link != null) {
-                                linkage(included.type(), new TypedClass(link).transform());
-                            }
-                        }
-                    } else {
-                        if(attribute.get(backingObject) != null) {
-                            linkage(included.type(), new TypedClass(attribute.get(backingObject)).transform());
-                        }
-                    }
-                    document.include(attribute.get(backingObject));
+                } else if (attribute.get(backingObject) != null) {
+                    handleIncluded(attribute, included);
                 }
             }
-        } catch(IllegalAccessException ex) {
+        } catch (IllegalAccessException ex) {
             // This Exception should actually never happen.
             throw new RuntimeException("It wasn't possible to access attribute on given object.", ex);
         }
 
         Map fullLinks = new HashMap(links);
+        // Add topLevelLinks to actual links.
         fullLinks.putAll(topLevelLinks);
 
-        // Take into account the annotation if present.
+        addCorrectType(representation, fullLinks);
+
+        return representation;
+    }
+
+    private void handleIncluded(Field attribute, Included included) throws IllegalAccessException {
+        if (attribute.get(backingObject) instanceof Collection) {
+            Collection toLink = (Collection) attribute.get(backingObject);
+            for (Object link : toLink) {
+                if (link != null) {
+                    Object typedResult = new TypedClass(link).transform();
+                    linkage(included.type(), typedResult);
+                    document.include(typedResult);
+                }
+            }
+        } else {
+            Object typedResult = new TypedClass(attribute.get(backingObject)).transform();
+
+            linkage(included.type(), typedResult);
+            document.include(typedResult);
+        }
+    }
+
+    // Take into account the annotation if present.
+    private void addCorrectType(TransformedResource representation, Map fullLinks) {
         Type typeAnnotation = backingObject.getClass().getAnnotation(Type.class);
-        if(typeAnnotation == null) {
+        if (typeAnnotation == null) {
             representation.put(ApiKeys.TYPE, backingObject.getClass().getSimpleName());
         } else {
             representation.put(ApiKeys.TYPE, typeAnnotation.name());
         }
         representation.put(ApiKeys.LINKS, fullLinks);
-
-        return representation;
     }
 }
