@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.Document;
 import net.balhar.jsonapi.Identifiable;
+import net.balhar.jsonapi.Included;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,6 +16,11 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static com.jayway.jsonassert.JsonAssert.collectionWithSize;
+import static com.jayway.jsonassert.JsonAssert.emptyCollection;
+import static com.jayway.jsonassert.JsonAssert.with;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -21,7 +28,6 @@ import static org.junit.Assert.assertThat;
  * Tests validating that integration with Jackson works correctly.
  */
 @RunWith(Nested.class)
-@Ignore
 public class SimpleDocumentJackson {
     private Document hauntedHouse;
     private ObjectMapper hauntedHouseDelivery;
@@ -45,8 +51,10 @@ public class SimpleDocumentJackson {
         @Test
         public void correctSimpleSerialization() throws Exception {
             String hauntedHouseForTransfer = hauntedHouseDelivery.writeValueAsString(hauntedHouse.transform());
-            assertThat(hauntedHouseForTransfer, is(
-                    "{\"data\":[{\"location\":\"Freezes everyone in view by singing.\",\"links\":{},\"uuid\":\"uuid2\",\"type\":\"Ghost\",\"variety\":\"Macey\"},{\"location\":\"Paints rooms to pink.\",\"links\":{},\"uuid\":\"uuid1\",\"type\":\"Ghost\",\"variety\":\"Trevor\"}],\"links\":[]}"));
+            with(hauntedHouseForTransfer)
+                    .assertThat("$.data", collectionWithSize(equalTo(2)))
+                    .assertThat("$.data..type", containsInAnyOrder("Ghost","Ghost"))
+                    .assertThat("$.links.*", emptyCollection());
         }
     }
 
@@ -59,9 +67,55 @@ public class SimpleDocumentJackson {
         @Test
         public void correctSimpleSerialization() throws Exception {
             String hauntedHouseForTransfer = hauntedHouseDelivery.writeValueAsString(hauntedHouse.transform());
-            assertThat(hauntedHouseForTransfer, is(
-                    "{\"data\":[{\"location\":\"Messes up your sense of reality.\",\"links\":{},\"uuid\":\"uuid1\",\"type\":\"Ghost\",\"variety\":\"Fred\"}],\"links\":[]}"));
+            with(hauntedHouseForTransfer)
+                    .assertThat("$.data", collectionWithSize(equalTo(1)))
+                    .assertThat("$.data..type", containsInAnyOrder("Ghost"))
+                    .assertThat("$.links.*", emptyCollection());
         }
+    }
+
+    public class Included {
+        private String hauntedHouseForTransfer;
+
+        @Before
+        public void setUp() throws Exception {
+            Collection<Elf> enemies = new ArrayList<>();
+            enemies.add(new Elf("uuid1", "Thranduil"));
+            enemies.add(new Elf("uuid2", "Legolas"));
+
+            Warrior warrior = new Warrior("uuid1", enemies);
+            hauntedHouse = new SimpleDocument(warrior);
+            hauntedHouseForTransfer = hauntedHouseDelivery.writeValueAsString(hauntedHouse.transform());
+        }
+
+        @Test
+        public void correctSerializationOfIncludedCollection() {
+            with(hauntedHouseForTransfer)
+                    .assertThat("$.included", collectionWithSize(equalTo(2)))
+                    .assertThat("$.included..type", containsInAnyOrder("Elf", "Elf"));
+        }
+
+        @Test
+        public void linkageContainsIncluded() {
+            with(hauntedHouseForTransfer)
+                    .assertThat("$.data[0].links.Elf.linkage", collectionWithSize(equalTo(2)))
+                    .assertThat("$.data[0].links.Elf.linkage..type", containsInAnyOrder("Elf", "Elf"));
+        }
+    }
+}
+
+class Warrior implements Identifiable {
+    private String uuid;
+    @Included(type = "Elf")
+    private Collection<Elf> enemies;
+
+    Warrior(String uuid, Collection<Elf> enemies) {
+        this.uuid = uuid;
+        this.enemies = enemies;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }
 
