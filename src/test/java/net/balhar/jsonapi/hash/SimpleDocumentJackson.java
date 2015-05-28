@@ -1,28 +1,23 @@
-package net.balhar.jsonapi.simple;
+package net.balhar.jsonapi.hash;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.Document;
+import net.balhar.jsonapi.Elf;
 import net.balhar.jsonapi.Identifiable;
 import net.balhar.jsonapi.Included;
-import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.jayway.jsonassert.JsonAssert.collectionWithSize;
-import static com.jayway.jsonassert.JsonAssert.emptyCollection;
-import static com.jayway.jsonassert.JsonAssert.with;
+import static com.jayway.jsonassert.JsonAssert.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests validating that integration with Jackson works correctly.
@@ -45,7 +40,7 @@ public class SimpleDocumentJackson {
             hauntedBy.add(new Ghost("uuid1", "Trevor", "Paints rooms to pink."));
             hauntedBy.add(new Ghost("uuid2", "Macey", "Freezes everyone in view by singing."));
 
-            hauntedHouse = new SimpleDocument(hauntedBy);
+            hauntedHouse = new HashDocument(hauntedBy);
         }
 
         @Test
@@ -61,7 +56,7 @@ public class SimpleDocumentJackson {
     public class Objects {
         @Before
         public void setUp(){
-            hauntedHouse = new SimpleDocument(new Ghost("uuid1", "Fred", "Messes up your sense of reality."));
+            hauntedHouse = new HashDocument(new Ghost("uuid1", "Fred", "Messes up your sense of reality."));
         }
 
         @Test
@@ -84,7 +79,7 @@ public class SimpleDocumentJackson {
             enemies.add(new Elf("uuid2", "Legolas"));
 
             Warrior warrior = new Warrior("uuid1", enemies);
-            hauntedHouse = new SimpleDocument(warrior);
+            hauntedHouse = new HashDocument(warrior);
             hauntedHouseForTransfer = hauntedHouseDelivery.writeValueAsString(hauntedHouse.transform());
         }
 

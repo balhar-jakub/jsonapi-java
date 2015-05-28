@@ -1,7 +1,6 @@
-package net.balhar.jsonapi.simple;
+package net.balhar.jsonapi.reflection;
 
 import net.balhar.jsonapi.*;
-import net.balhar.jsonapi.reflection.TypedClass;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -15,20 +14,20 @@ import java.util.Map;
  * simple Resource interpretation.
  * I do want to keep resource as I want to be able to provide fluent API to add.
  */
-public class SimpleResource implements Resource {
+public class ReflectionResource implements Resource {
     private Map<String, Map<String, Object>> links = new HashMap<>();
     private Map<String, String> topLevelLinks = new HashMap<>();
 
     private Object backingObject;
     private Document document;
 
-    public SimpleResource(Object object, Document document) {
+    public ReflectionResource(Object object, Document document) {
         this.backingObject = object;
         this.document = document;
     }
 
     @Override
-    public SimpleResource link(String associationKey, String nestedKey, String location) {
+    public ReflectionResource link(String associationKey, String nestedKey, String location) {
         if (!links.containsKey(associationKey)) {
             links.put(associationKey, new HashMap<String, Object>());
         }

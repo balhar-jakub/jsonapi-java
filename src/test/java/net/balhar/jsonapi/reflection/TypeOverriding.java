@@ -1,10 +1,13 @@
-package net.balhar.jsonapi.simple;
+package net.balhar.jsonapi.reflection;
 
 import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.ApiKeys;
 import net.balhar.jsonapi.Document;
 import net.balhar.jsonapi.Identifiable;
 import net.balhar.jsonapi.Type;
+import net.balhar.jsonapi.hash.HashDocument;
+import net.balhar.jsonapi.hash.TransformedDocument;
+import net.balhar.jsonapi.hash.TransformedResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +24,7 @@ public class TypeOverriding {
 
     @Before
     public void setUp(){
-        dwarfWarrior = new SimpleDocument(new DwarfDto("validUuid"));
+        dwarfWarrior = new HashDocument(new DwarfDto("validUuid"));
     }
 
     @Test

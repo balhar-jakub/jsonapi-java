@@ -1,4 +1,4 @@
-package net.balhar.jsonapi.simple;
+package net.balhar.jsonapi.reflection;
 
 import net.balhar.jsonapi.ApiKeys;
 import net.balhar.jsonapi.Document;
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * There is concept of link on top level of the document.
  */
-public class SimpleDocument implements Document {
+public class ReflectionDocument implements Document {
     private String baseUrl = "";
 
     private Map<String, Resource> data = new HashMap<>();
@@ -21,25 +21,25 @@ public class SimpleDocument implements Document {
     private Map<String, String> links = new HashMap<>();
     private Map<String, Object> meta = new HashMap<>();
 
-    public SimpleDocument(Collection<? extends Identifiable> object, String baseUrl){
+    public ReflectionDocument(Collection<? extends Identifiable> object, String baseUrl){
         this(object);
         this.baseUrl = baseUrl;
     }
 
-    public SimpleDocument(Identifiable object, String baseUrl){
+    public ReflectionDocument(Identifiable object, String baseUrl){
         this(object);
         this.baseUrl = baseUrl;
     }
 
-    public SimpleDocument(Collection<? extends Identifiable> objects){
+    public ReflectionDocument(Collection<? extends Identifiable> objects){
         // Retrieve uuid from the object.
         for(Identifiable object: objects) {
-            data.put(object.getUuid(), new SimpleResource(object, this));
+            data.put(object.getUuid(), new ReflectionResource(object, this));
         }
     }
 
-    public SimpleDocument(Identifiable object) {
-        data.put(object.getUuid(), new SimpleResource(object, this));
+    public ReflectionDocument(Identifiable object) {
+        data.put(object.getUuid(), new ReflectionResource(object, this));
     }
 
     @Override

@@ -1,7 +1,9 @@
-package net.balhar.jsonapi.simple;
+package net.balhar.jsonapi.reflection;
 
 import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.*;
+import net.balhar.jsonapi.hash.HashDocument;
+import net.balhar.jsonapi.hash.TransformedDocument;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,14 +20,14 @@ import static org.junit.Assert.*;
  * Tests for simple representation of correct document.
  */
 @RunWith(Nested.class)
-public class SimpleDocumentTest {
+public class HashDocumentTest {
     private Document document;
     private TransformedDocument result;
 
     public class EmptyDocument {
         @Before
         public void setUp(){
-            document = new SimpleDocument(new Identifiable() {
+            document = new HashDocument(new Identifiable() {
                 @Override
                 public String getUuid() {
                     return "uuid";
@@ -59,11 +61,11 @@ public class SimpleDocumentTest {
         private Map links;
         private Collection included;
         private Map meta;
-        private TransformedResource singlePlatypus;
+        private net.balhar.jsonapi.hash.TransformedResource singlePlatypus;
 
         @Before
         public void setUp() throws MalformedURLException {
-            document = new SimpleDocument(new Platypus());
+            document = new HashDocument(new Platypus());
 
             document.link("next", "http://test.balhar.net/api/previous")
                     .link("previous", "http://another.balhar.net/api/next")
@@ -81,7 +83,7 @@ public class SimpleDocumentTest {
             links = result.links();
             included = result.included();
             meta = result.meta();
-            singlePlatypus = (TransformedResource) (result.data()).iterator().next();
+            singlePlatypus = (net.balhar.jsonapi.hash.TransformedResource) (result.data()).iterator().next();
         }
 
         @Test
@@ -136,7 +138,7 @@ public class SimpleDocumentTest {
     public class WithBaseUrl {
         @Before
         public void setUp(){
-            document = new SimpleDocument(new Platypus(),"http://test.balhar.net/api/");
+            document = new HashDocument(new Platypus(),"http://test.balhar.net/api/");
 
             document.link("next", "previous");
 

@@ -1,4 +1,4 @@
-package net.balhar.jsonapi.simple;
+package net.balhar.jsonapi.reflection;
 
 import java.util.Objects;
 

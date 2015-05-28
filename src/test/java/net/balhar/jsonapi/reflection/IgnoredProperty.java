@@ -1,9 +1,10 @@
-package net.balhar.jsonapi.simple;
+package net.balhar.jsonapi.reflection;
 
 import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.Document;
 import net.balhar.jsonapi.Identifiable;
 import net.balhar.jsonapi.Ignored;
+import net.balhar.jsonapi.hash.HashDocument;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ public class IgnoredProperty {
 
     @Before
     public void setUp() {
-        characters = new SimpleDocument(new Character(1, "Tommy", "Shy character playing chess and killing vampires " +
+        characters = new HashDocument(new Character(1, "Tommy", "Shy character playing chess and killing vampires " +
                 "in free time.", true));
     }
 
