@@ -2,8 +2,6 @@ package net.balhar.jsonapi.reflection;
 
 import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.*;
-import net.balhar.jsonapi.hash.HashDocument;
-import net.balhar.jsonapi.hash.TransformedDocument;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +25,7 @@ public class HashDocumentTest {
     public class EmptyDocument {
         @Before
         public void setUp(){
-            document = new HashDocument(new Identifiable() {
+            document = new ReflectionDocument(new Identifiable() {
                 @Override
                 public String getUuid() {
                     return "uuid";
@@ -43,7 +41,7 @@ public class HashDocumentTest {
 
         @Test
         public void containEmptyData(){
-            assertNotNull(result.data());
+            assertNotNull(result.get(ApiKeys.DATA));
         }
 
         @Test
@@ -61,11 +59,11 @@ public class HashDocumentTest {
         private Map links;
         private Collection included;
         private Map meta;
-        private net.balhar.jsonapi.hash.TransformedResource singlePlatypus;
+        private TransformedResource singlePlatypus;
 
         @Before
         public void setUp() throws MalformedURLException {
-            document = new HashDocument(new Platypus());
+            document = new ReflectionDocument(new Platypus());
 
             document.link("next", "http://test.balhar.net/api/previous")
                     .link("previous", "http://another.balhar.net/api/next")
@@ -83,7 +81,7 @@ public class HashDocumentTest {
             links = result.links();
             included = result.included();
             meta = result.meta();
-            singlePlatypus = (net.balhar.jsonapi.hash.TransformedResource) (result.data()).iterator().next();
+            singlePlatypus = (TransformedResource) result.get(ApiKeys.DATA);
         }
 
         @Test
@@ -138,7 +136,7 @@ public class HashDocumentTest {
     public class WithBaseUrl {
         @Before
         public void setUp(){
-            document = new HashDocument(new Platypus(),"http://test.balhar.net/api/");
+            document = new ReflectionDocument(new Platypus(),"http://test.balhar.net/api/");
 
             document.link("next", "previous");
 

@@ -21,6 +21,9 @@ public class ReflectionDocument implements Document {
     private Map<String, String> links = new HashMap<>();
     private Map<String, Object> meta = new HashMap<>();
 
+    private boolean isSingleItem = false;
+    private Resource singleData;
+
     public ReflectionDocument(Collection<? extends Identifiable> object, String baseUrl){
         this(object);
         this.baseUrl = baseUrl;
@@ -39,7 +42,9 @@ public class ReflectionDocument implements Document {
     }
 
     public ReflectionDocument(Identifiable object) {
-        data.put(object.getUuid(), new ReflectionResource(object, this));
+        singleData = new ReflectionResource(object, this);
+        data.put(object.getUuid(), singleData);
+        isSingleItem = true;
     }
 
     @Override
@@ -110,14 +115,18 @@ public class ReflectionDocument implements Document {
     public Object transform(){
         TransformedDocument<String, Object> result = new TransformedDocument<>();
 
-        Collection<Object> transformedResources = new ArrayList<>();
-        Collection<Resource> resources = data.values();
-        for(Resource resource: resources) {
-            transformedResources.add(resource.transform());
+        if(!isSingleItem) {
+            Collection<Object> transformedResources = new ArrayList<>();
+            Collection<Resource> resources = data.values();
+            for (Resource resource : resources) {
+                transformedResources.add(resource.transform());
+            }
+            result.put(ApiKeys.DATA, transformedResources);
+        } else {
+            result.put(ApiKeys.DATA, singleData.transform());
         }
-        result.put(ApiKeys.DATA, transformedResources);
-        result.put(ApiKeys.LINKS, links);
 
+        result.put(ApiKeys.LINKS, links);
         if(!meta.isEmpty()) result.put(ApiKeys.META, meta);
         if(!included.isEmpty()) result.put(ApiKeys.INCLUDED, included);
 

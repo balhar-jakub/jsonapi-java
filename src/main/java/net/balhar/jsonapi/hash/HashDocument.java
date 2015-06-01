@@ -13,10 +13,14 @@ import java.util.*;
 public class HashDocument implements Document {
     private String baseUrl = "";
 
+    private Resource singleData;
     private Map<String, Resource> data = new HashMap<>();
+
     private Collection<Object> included = new HashSet<>();
     private Map<String, String> links = new HashMap<>();
     private Map<String, Object> meta = new HashMap<>();
+
+    private boolean isSingleObject = false;
 
     public HashDocument(Collection<? extends Identifiable> object, String baseUrl){
         this(object);
@@ -36,7 +40,9 @@ public class HashDocument implements Document {
     }
 
     public HashDocument(Identifiable object) {
-        data.put(object.getUuid(), new HashResource(object, this));
+        singleData = new HashResource(object, this);
+        data.put(object.getUuid(), singleData);
+        isSingleObject = true;
     }
 
     @Override
@@ -107,14 +113,18 @@ public class HashDocument implements Document {
     public Object transform(){
         TransformedDocument<String, Object> result = new TransformedDocument<>();
 
-        Collection<Object> transformedResources = new ArrayList<>();
-        Collection<Resource> resources = data.values();
-        for(Resource resource: resources) {
-            transformedResources.add(resource.transform());
+        if(!isSingleObject) {
+            Collection<Object> transformedResources = new ArrayList<>();
+            Collection<Resource> resources = data.values();
+            for (Resource resource : resources) {
+                transformedResources.add(resource.transform());
+            }
+            result.put(ApiKeys.DATA, transformedResources);
+        } else {
+            result.put(ApiKeys.DATA, singleData.transform());
         }
-        result.put(ApiKeys.DATA, transformedResources);
-        result.put(ApiKeys.LINKS, links);
 
+        result.put(ApiKeys.LINKS, links);
         if(!meta.isEmpty()) result.put(ApiKeys.META, meta);
         if(!included.isEmpty()) result.put(ApiKeys.INCLUDED, included);
 

@@ -5,9 +5,6 @@ import net.balhar.jsonapi.ApiKeys;
 import net.balhar.jsonapi.Document;
 import net.balhar.jsonapi.Identifiable;
 import net.balhar.jsonapi.Type;
-import net.balhar.jsonapi.hash.HashDocument;
-import net.balhar.jsonapi.hash.TransformedDocument;
-import net.balhar.jsonapi.hash.TransformedResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +21,13 @@ public class TypeOverriding {
 
     @Before
     public void setUp(){
-        dwarfWarrior = new HashDocument(new DwarfDto("validUuid"));
+        dwarfWarrior = new ReflectionDocument(new DwarfDto("validUuid"));
     }
 
     @Test
     public void payloadHasCorrectType() {
         TransformedDocument document = (TransformedDocument) dwarfWarrior.transform();
-        TransformedResource warrior = (TransformedResource) document.data().iterator().next();
+        TransformedResource warrior = (TransformedResource) document.get(ApiKeys.DATA);
         String warriorType = (String) warrior.get(ApiKeys.TYPE);
         assertThat(warriorType, is("dwarf"));
     }

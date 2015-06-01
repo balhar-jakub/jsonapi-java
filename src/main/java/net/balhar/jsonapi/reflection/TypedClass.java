@@ -38,6 +38,7 @@ public class TypedClass {
                 subClass.addConstructor(ctor);
                 CtClass string = ClassPool.getDefault().get(String.class.getCanonicalName());
                 CtField typeToBeAdded = new CtField(string, ApiKeys.TYPE, subClass);
+                typeToBeAdded.setModifiers(Modifier.PUBLIC);
                 subClass.addField(typeToBeAdded);
                 instantiable = subClass.toClass();
             } else {

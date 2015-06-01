@@ -9,6 +9,7 @@ import net.balhar.jsonapi.Elf;
 import net.balhar.jsonapi.Identifiable;
 import net.balhar.jsonapi.Included;
 import net.balhar.jsonapi.hash.HashDocument;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +69,7 @@ public class SimpleDocumentJackson {
         public void correctSimpleSerialization() throws Exception {
             String hauntedHouseForTransfer = hauntedHouseDelivery.writeValueAsString(hauntedHouse.transform());
             with(hauntedHouseForTransfer)
-                    .assertThat("$.data", collectionWithSize(equalTo(1)))
+                    .assertThat("$.data.uuid", is("uuid1"))
                     .assertThat("$.data..type", containsInAnyOrder("Ghost"))
                     .assertThat("$.links.*", emptyCollection());
         }
@@ -98,8 +99,8 @@ public class SimpleDocumentJackson {
         @Test
         public void linkageContainsIncluded() {
             with(hauntedHouseForTransfer)
-                    .assertThat("$.data[0].links.Elf.linkage", collectionWithSize(equalTo(2)))
-                    .assertThat("$.data[0].links.Elf.linkage..type", containsInAnyOrder("Elf", "Elf"));
+                    .assertThat("$.data.links.Elf.linkage", collectionWithSize(equalTo(2)))
+                    .assertThat("$.data.links.Elf.linkage..type", containsInAnyOrder("Elf", "Elf"));
         }
     }
 }

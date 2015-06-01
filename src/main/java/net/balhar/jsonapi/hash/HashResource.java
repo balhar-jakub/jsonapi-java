@@ -2,7 +2,6 @@ package net.balhar.jsonapi.hash;
 
 import javassist.Modifier;
 import net.balhar.jsonapi.*;
-import net.balhar.jsonapi.reflection.TypedClass;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -76,11 +75,16 @@ public class HashResource implements Resource {
                 }
 
                 Included included = attribute.getAnnotation(Included.class);
+                RecursiveIncluded recursiveIncluded = attribute.getAnnotation(RecursiveIncluded.class);
                 attribute.setAccessible(true);
-                if (included == null) {
+                if (included == null && recursiveIncluded == null) {
                     representation.put(attribute.getName(), attribute.get(backingObject));
                 } else if (attribute.get(backingObject) != null) {
-                    handleIncluded(attribute, included);
+                    if(included != null) {
+                        handleIncluded(attribute, included);
+                    } else {
+                        handleRecursiveIncluded(attribute, recursiveIncluded);
+                    }
                 }
             }
         } catch (IllegalAccessException ex) {
@@ -98,8 +102,7 @@ public class HashResource implements Resource {
     }
 
     // I would say for first iteration just copy attributes.
-    private void handleIncluded(Field attribute, Included included) throws
-            IllegalAccessException {
+    private void handleIncluded(Field attribute, Included included) throws IllegalAccessException {
         if (attribute.get(backingObject) instanceof Collection) {
             Collection<Identifiable> toLink = (Collection<Identifiable>) attribute.get(backingObject);
             for (Identifiable link : toLink) {
@@ -113,7 +116,8 @@ public class HashResource implements Resource {
                     linkage(included.type(), linkageObject);
                     mapFields(link, includedObject);
                     includedObject.put("type", included.type());
-                    document.include(includedObject);
+                    document.include(includedObject); // Go also recursively through the object looking for other
+                    // included annotations.
                 }
             }
         } else {
@@ -126,6 +130,11 @@ public class HashResource implements Resource {
             includedObject.put("type", included.type());
             document.include(includedObject);
         }
+    }
+
+    private void handleRecursiveIncluded(Field attribute, RecursiveIncluded included) throws IllegalAccessException {
+        // You need to create the included ad presented, therefore also factoring out the logic how to handle included.
+        String type = included.type();
     }
 
     // Take into account the annotation if present.

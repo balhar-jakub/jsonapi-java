@@ -4,12 +4,10 @@ import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.Document;
 import net.balhar.jsonapi.Identifiable;
 import net.balhar.jsonapi.Ignored;
-import net.balhar.jsonapi.hash.HashDocument;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Collection;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -25,16 +23,16 @@ public class IgnoredProperty {
 
     @Before
     public void setUp() {
-        characters = new HashDocument(new Character(1, "Tommy", "Shy character playing chess and killing vampires " +
+        characters = new ReflectionDocument(new Character(1, "Tommy", "Shy character playing chess and killing vampires " +
                 "in free time.", true));
     }
 
     @Test
     public void idIsIgnored() throws Exception {
         Map<String, Object> transferredCharacter = (Map<String, Object>) characters.transform();
-        Collection data = (Collection)transferredCharacter.get("data");
+        Map data = (Map)transferredCharacter.get("data");
 
-        String characterId = (String) ((Map)data.iterator().next()).get("id");
+        String characterId = (String) data.get("id");
         assertThat(characterId, is(nullValue()));
     }
 }

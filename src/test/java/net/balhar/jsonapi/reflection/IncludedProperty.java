@@ -2,8 +2,6 @@ package net.balhar.jsonapi.reflection;
 
 import net.avh4.test.junit.Nested;
 import net.balhar.jsonapi.*;
-import net.balhar.jsonapi.hash.HashDocument;
-import net.balhar.jsonapi.hash.TransformedDocument;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,19 +30,19 @@ public class IncludedProperty {
             enemies.add(new Elf("uuid2", "Legolas"));
             Dwarf universalWarrior = new Dwarf("uuid1", "Gimli", enemies, null);
 
-            Document document = new HashDocument(universalWarrior);
+            Document document = new ReflectionDocument(universalWarrior);
             warriorTransfer = (TransformedDocument) document.transform();
         }
 
         @Test
         public void includedIsMissingInPayload() {
-            Map transferredWarrior = (Map) warriorTransfer.data().iterator().next();
+            Map transferredWarrior = (Map) warriorTransfer.get(ApiKeys.DATA);
             assertThat(transferredWarrior.get("enemies"), is(nullValue()));
         }
 
         @Test
         public void includedIsInLinkageInLinks() throws Exception {
-            net.balhar.jsonapi.hash.TransformedResource transferredWarrior = (net.balhar.jsonapi.hash.TransformedResource) warriorTransfer.data().iterator().next();
+            TransformedResource transferredWarrior = (TransformedResource) warriorTransfer.get(ApiKeys.DATA);
             Map linksToEnemies = transferredWarrior.links("Elf");
             Collection linkage = (Collection) linksToEnemies.get(ApiKeys.LINKAGE);
             assertThat(linkage.size(), is(2));
@@ -74,19 +72,19 @@ public class IncludedProperty {
             Elf mortalEnemy = new Elf("uuid3", "Aidais");
             Dwarf universalWarrior = new Dwarf("uuid1", "Gimli", null, mortalEnemy);
 
-            Document document = new HashDocument(universalWarrior);
+            Document document = new ReflectionDocument(universalWarrior);
             warriorTransfer = (TransformedDocument) document.transform();
         }
 
         @Test
         public void includedMissingFromPayload() {
-            Map transferredWarrior = (Map) warriorTransfer.data().iterator().next();
+            Map transferredWarrior = (Map) warriorTransfer.get(ApiKeys.DATA);
             assertThat(transferredWarrior.get("mortalEnemy"), is(nullValue()));
         }
 
         @Test
         public void includedPresentInLinkage() throws Exception {
-            net.balhar.jsonapi.hash.TransformedResource transferredWarrior = (net.balhar.jsonapi.hash.TransformedResource) warriorTransfer.data().iterator().next();
+            TransformedResource transferredWarrior = (TransformedResource) warriorTransfer.get(ApiKeys.DATA);
             Map linksToEnemies = transferredWarrior.links("Elf");
             Collection linkage = (Collection) linksToEnemies.get(ApiKeys.LINKAGE);
             assertThat(linkage.size(), is(1));
@@ -111,7 +109,7 @@ public class IncludedProperty {
         public void setUp() {
             Dwarf universalWarrior = new Dwarf("uuid1", "Gimli", null, null);
 
-            Document document = new HashDocument(universalWarrior);
+            Document document = new ReflectionDocument(universalWarrior);
             warriorTransfer = (TransformedDocument) document.transform();
         }
 
