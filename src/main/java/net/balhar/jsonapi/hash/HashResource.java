@@ -75,16 +75,11 @@ public class HashResource implements Resource {
                 }
 
                 Included included = attribute.getAnnotation(Included.class);
-                RecursiveIncluded recursiveIncluded = attribute.getAnnotation(RecursiveIncluded.class);
                 attribute.setAccessible(true);
-                if (included == null && recursiveIncluded == null) {
+                if (included == null) {
                     representation.put(attribute.getName(), attribute.get(backingObject));
                 } else if (attribute.get(backingObject) != null) {
-                    if(included != null) {
-                        handleIncluded(attribute, included);
-                    } else {
-                        handleRecursiveIncluded(attribute, recursiveIncluded);
-                    }
+                    handleIncluded(attribute, included);
                 }
             }
         } catch (IllegalAccessException ex) {
@@ -109,32 +104,29 @@ public class HashResource implements Resource {
                 // Somehow map the attributes of the object instead of extending it. How do I want to proceed when
                 // there are other objects nested inside?
                 if (link != null) {
-                    Map includedObject = new HashMap();
-                    Map linkageObject = new HashMap();
-                    linkageObject.put("uuid", link.getUuid());
-                    linkageObject.put("type", included.type());
-                    linkage(included.type(), linkageObject);
-                    mapFields(link, includedObject);
-                    includedObject.put("type", included.type());
-                    document.include(includedObject); // Go also recursively through the object looking for other
-                    // included annotations.
+                    createLinkage(link, included.type());
+                    includeInDocument(link, included.type());
                 }
             }
         } else {
-            Map includedObject = new HashMap();
-            Map linkageObject = new HashMap();
-            linkageObject.put("uuid", ((Identifiable) attribute.get(backingObject)).getUuid());
-            linkageObject.put("type", included.type());
-            linkage(included.type(), linkageObject);
-            mapFields(attribute.get(backingObject), includedObject);
-            includedObject.put("type", included.type());
-            document.include(includedObject);
+            Identifiable link = (Identifiable) attribute.get(backingObject);
+            createLinkage(link, included.type());
+            includeInDocument(link, included.type());
         }
     }
 
-    private void handleRecursiveIncluded(Field attribute, RecursiveIncluded included) throws IllegalAccessException {
-        // You need to create the included ad presented, therefore also factoring out the logic how to handle included.
-        String type = included.type();
+    private void createLinkage(Identifiable includedObject, String type) {
+        Map linkageObject = new HashMap();
+        linkageObject.put("uuid", includedObject.getUuid());
+        linkageObject.put("type", type);
+        linkage(type, linkageObject);
+    }
+
+    private void includeInDocument(Identifiable toBeIncluded, String type) throws IllegalAccessException {
+        Map includedObject = new HashMap();
+        mapFields(toBeIncluded, includedObject);
+        includedObject.put("type", type);
+        document.include(includedObject);
     }
 
     // Take into account the annotation if present.
