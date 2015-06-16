@@ -6,7 +6,7 @@
 
     <groupId>net.balhar.jsonapi</groupId>
     <artifactId>jsonapi</artifactId>
-    <version>0.11</version>
+    <version>0.12</version>
 
     <name>Json API java implementation</name>
     <description>It brings capabilities needed to simply use JSON Api (http://jsonapi.org/)</description>
@@ -44,6 +44,30 @@
                     <target>1.7</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
