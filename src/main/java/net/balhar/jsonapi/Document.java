@@ -9,7 +9,7 @@ package net.balhar.jsonapi;
  * Unless needed for some specific reasons the object should be lazy. Meaning that representation for serialization
  * isn't created before it is needed.
  *
- * @see http://jsonapi.org/ Specification for the JsonApiDocument.
+ * @see <a href="http://jsonapi.org/">http://jsonapi.org/</a> Specification for the JsonApiDocument.
  */
 public interface Document {
     /**
@@ -17,6 +17,7 @@ public interface Document {
      *
      * @param key key which will be used by consumers to identify what is possible to do further from this resource.
      * @param location Url of resource representing some followup on this document.
+     * @return Current document for further chaining.
      */
     Document link(String key, String location);
 
@@ -24,6 +25,7 @@ public interface Document {
      * It includes the whole object into the final document. How exactly it will be done depends on the implementation.
      *
      * @param included Object to be included.
+     * @return Current document for further chaining.
      */
     Document include(Object included);
 
@@ -33,6 +35,7 @@ public interface Document {
      *
      * @param key key under which the meta information is available
      * @param value value of the meta information
+     * @return Current document for further chaining.
      */
     Document meta(String key, Object value);
 
@@ -45,6 +48,7 @@ public interface Document {
      * @param associationKey Key under which nested link for this key will be present.
      * @param nestedKey Key under which this location is stored in associationKey store.
      * @param location Url associated with this link.
+     * @return Current document for further chaining.
      */
     Document link(String uuid, String associationKey, String nestedKey, String location);
 
@@ -56,6 +60,7 @@ public interface Document {
      * @param uuid Uuid of the resource already present in the document.
      * @param associationKey Key under which this location will be present in the links section of resources.
      * @param location Url associated with this link.
+     * @return Current document for further chaining.
      */
     Document link(String uuid, String associationKey, String location);
 
@@ -66,6 +71,7 @@ public interface Document {
      * @param associationKey Association key under which add this to the linkage.
      * @param linkUuid uuid of the resource to which this link belongs. It must be present.
      * @param payload Payload representing the linkage.
+     * @return Current document for further chaining.
      */
     Document linkage(String linkUuid, String associationKey, Object payload);
 

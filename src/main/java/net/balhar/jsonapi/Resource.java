@@ -20,7 +20,7 @@ public interface Resource {
      *
      * @param associationKey Key under which the data will be stored.
      * @param location URL path to the resource.
-     * @return
+     * @return Itself for further chaining.
      */
     Resource link(String associationKey, String location);
 
@@ -29,6 +29,7 @@ public interface Resource {
      * some interface, which provide way how to retrieve the relevant information. Probably try expecting the object,
      * which will contain all information. I would say by default add it to the JSON Document, but it isn't a way.
      *
+     * @param type Type on which is the linkage added.
      * @param payload Payload for the linkage
      * @return Itself for chaining
      */
