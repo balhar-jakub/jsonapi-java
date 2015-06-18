@@ -8,8 +8,6 @@ package net.balhar.jsonapi;
  * structure containing all necessary data on right places.
  * Unless needed for some specific reasons the object should be lazy. Meaning that representation for serialization
  * isn't created before it is needed.
- *
- * @see <a href="http://jsonapi.org/">http://jsonapi.org/</a> Specification for the JsonApiDocument.
  */
 public interface Document {
     /**
