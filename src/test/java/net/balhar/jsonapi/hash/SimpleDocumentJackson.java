@@ -16,6 +16,7 @@ import java.util.Collection;
 import static com.jayway.jsonassert.JsonAssert.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
 /**
@@ -48,6 +49,7 @@ public class SimpleDocumentJackson {
             with(hauntedHouseForTransfer)
                     .assertThat("$.data", collectionWithSize(equalTo(2)))
                     .assertThat("$.data..type", containsInAnyOrder("Ghost","Ghost"))
+                    .assertThat("$.data..uuid", contains("uuid1", "uuid2"))
                     .assertThat("$.links.*", emptyCollection());
         }
     }

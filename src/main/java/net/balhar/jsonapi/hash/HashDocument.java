@@ -9,12 +9,13 @@ import java.util.*;
 
 /**
  * There is concept of link on top level of the document.
+ * // Reatin order of the objects.
  */
 public class HashDocument implements Document {
     private String baseUrl = "";
 
     private Resource singleData;
-    private Map<String, Resource> data = new HashMap<>();
+    private Map<String, Resource> data = new LinkedHashMap<>();
 
     private Collection<Object> included = new HashSet<>();
     private Map<String, String> links = new HashMap<>();
