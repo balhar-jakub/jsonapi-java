@@ -104,22 +104,22 @@ public class HashResource implements Resource {
                 // Somehow map the attributes of the object instead of extending it. How do I want to proceed when
                 // there are other objects nested inside?
                 if (link != null) {
-                    createLinkage(link, included.type());
+                    createLinkage(link, included.type(), included.association());
                     includeInDocument(link, included.type());
                 }
             }
         } else {
             Identifiable link = (Identifiable) attribute.get(backingObject);
-            createLinkage(link, included.type());
+            createLinkage(link, included.type(), included.association());
             includeInDocument(link, included.type());
         }
     }
 
-    private void createLinkage(Identifiable includedObject, String type) {
+    private void createLinkage(Identifiable includedObject, String type, String associationName) {
         Map linkageObject = new HashMap();
         linkageObject.put("uuid", includedObject.getUuid());
         linkageObject.put("type", type);
-        linkage(type, linkageObject);
+        linkage(associationName, linkageObject);
     }
 
     private void includeInDocument(Identifiable toBeIncluded, String type) throws IllegalAccessException {
