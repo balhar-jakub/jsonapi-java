@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
  * Test for overriding type of the document.
  */
 @RunWith(Nested.class)
-public class TypeOverriding {
+public class TypeOverridingTest {
     private Document dwarfWarrior;
 
     @Before

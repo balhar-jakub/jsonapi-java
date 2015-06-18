@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat;
  * As part of including attach the resources into the linkage section of given resource?
  */
 @RunWith(Nested.class)
-public class IncludedProperty {
+public class IncludedPropertyTest {
     TransformedDocument warriorTransfer;
 
     public class IncludedCollection {
@@ -123,9 +123,9 @@ public class IncludedProperty {
 class Dwarf implements Identifiable {
     private String uuid;
     private String name;
-    @Included(type="Elf")
+    @Included(type="Elf", association = "Elf")
     private Elf mortalEnemy;
-    @Included(type = "Elf")
+    @Included(type = "Elf", association = "Elf")
     private Collection<Elf> enemies;
 
     public Dwarf(String uuid, String name, Collection<Elf> enemies, Elf mortalEnemy) {

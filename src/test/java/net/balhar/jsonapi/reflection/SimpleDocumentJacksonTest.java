@@ -1,11 +1,15 @@
-package net.balhar.jsonapi.hash;
+package net.balhar.jsonapi.reflection;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.avh4.test.junit.Nested;
-import net.balhar.jsonapi.*;
-import org.hamcrest.Matchers;
+import net.balhar.jsonapi.Document;
+import net.balhar.jsonapi.Elf;
+import net.balhar.jsonapi.Identifiable;
+import net.balhar.jsonapi.Included;
+import net.balhar.jsonapi.hash.HashDocument;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,17 +17,19 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.jayway.jsonassert.JsonAssert.*;
+import static com.jayway.jsonassert.JsonAssert.collectionWithSize;
+import static com.jayway.jsonassert.JsonAssert.emptyCollection;
+import static com.jayway.jsonassert.JsonAssert.with;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests validating that integration with Jackson works correctly.
  */
 @RunWith(Nested.class)
-public class SimpleDocumentJackson {
+public class SimpleDocumentJacksonTest {
     private Document hauntedHouse;
     private ObjectMapper hauntedHouseDelivery;
 
@@ -49,7 +55,6 @@ public class SimpleDocumentJackson {
             with(hauntedHouseForTransfer)
                     .assertThat("$.data", collectionWithSize(equalTo(2)))
                     .assertThat("$.data..type", containsInAnyOrder("Ghost","Ghost"))
-                    .assertThat("$.data..uuid", contains("uuid1", "uuid2"))
                     .assertThat("$.links.*", emptyCollection());
         }
     }
@@ -64,8 +69,8 @@ public class SimpleDocumentJackson {
         public void correctSimpleSerialization() throws Exception {
             String hauntedHouseForTransfer = hauntedHouseDelivery.writeValueAsString(hauntedHouse.transform());
             with(hauntedHouseForTransfer)
-                    .assertThat("$.data.type", is("Ghost"))
                     .assertThat("$.data.uuid", is("uuid1"))
+                    .assertThat("$.data..type", containsInAnyOrder("Ghost"))
                     .assertThat("$.links.*", emptyCollection());
         }
     }
@@ -102,7 +107,7 @@ public class SimpleDocumentJackson {
 
 class Warrior implements Identifiable {
     private String uuid;
-    @Included(type = "Elf")
+    @Included(type = "Elf", association = "Elf")
     private Collection<Elf> enemies;
 
     Warrior(String uuid, Collection<Elf> enemies) {

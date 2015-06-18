@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
  * Tests to verify correct behavior of ignored annotation.
  */
 @RunWith(Nested.class)
-public class IgnoredProperty {
+public class IgnoredPropertyTest {
     private Document characters;
 
     @Before
